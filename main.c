@@ -385,15 +385,7 @@ static void on_ble_evt(ble_evt_t * p_ble_evt)
             if (p_ble_evt->evt.gap_evt.params.timeout.src == BLE_GAP_TIMEOUT_SRC_ADVERTISEMENT)
             {
                 nrf_gpio_pin_clear(ADVERTISING_LED_PIN_NO);
-
-                // Configure buttons with sense level low as wakeup source.
-                nrf_gpio_cfg_sense_input(WAKEUP_BUTTON_PIN,
-                                         BUTTON_PULL,
-                                         NRF_GPIO_PIN_SENSE_LOW);
-
-                // Go to system-off mode (this function will not return; wakeup will cause a reset)
-                err_code = sd_power_system_off();
-                APP_ERROR_CHECK(err_code);
+                advertising_start();
             }
             break;
 
