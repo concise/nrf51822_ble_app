@@ -47,7 +47,7 @@ static void on_disconnect(ble_nus_t * p_nus, ble_evt_t * p_ble_evt)
 static void on_write(ble_nus_t * p_nus, ble_evt_t * p_ble_evt)
 {
     ble_gatts_evt_write_t * p_evt_write = &p_ble_evt->evt.gatts_evt.params.write;
-    
+
     if (
         (p_evt_write->handle == p_nus->rx_handles.cccd_handle)
         &&
@@ -93,36 +93,36 @@ static uint32_t rx_char_add(ble_nus_t * p_nus, const ble_nus_init_t * p_nus_init
     ble_gatts_attr_t    attr_char_value;
     ble_uuid_t          ble_uuid;
     ble_gatts_attr_md_t attr_md;
-    
+
     memset(&cccd_md, 0, sizeof(cccd_md));
 
     BLE_GAP_CONN_SEC_MODE_SET_OPEN(&cccd_md.read_perm);
     BLE_GAP_CONN_SEC_MODE_SET_OPEN(&cccd_md.write_perm);
 
     cccd_md.vloc = BLE_GATTS_VLOC_STACK;
-    
+
     memset(&char_md, 0, sizeof(char_md));
-    
+
     char_md.char_props.notify = 1;
     char_md.p_char_user_desc  = NULL;
     char_md.p_char_pf         = NULL;
     char_md.p_user_desc_md    = NULL;
     char_md.p_cccd_md         = &cccd_md;
     char_md.p_sccd_md         = NULL;
-    
+
     ble_uuid.type             = p_nus->uuid_type;
     ble_uuid.uuid             = BLE_UUID_NUS_RX_CHARACTERISTIC;
-    
+
     memset(&attr_md, 0, sizeof(attr_md));
 
     BLE_GAP_CONN_SEC_MODE_SET_OPEN(&attr_md.read_perm);
     BLE_GAP_CONN_SEC_MODE_SET_OPEN(&attr_md.write_perm);
-    
+
     attr_md.vloc              = BLE_GATTS_VLOC_STACK;
     attr_md.rd_auth           = 0;
     attr_md.wr_auth           = 0;
     attr_md.vlen              = 1;
-    
+
     memset(&attr_char_value, 0, sizeof(attr_char_value));
 
     attr_char_value.p_uuid    = &ble_uuid;
@@ -130,7 +130,7 @@ static uint32_t rx_char_add(ble_nus_t * p_nus, const ble_nus_init_t * p_nus_init
     attr_char_value.init_len  = sizeof(uint8_t);
     attr_char_value.init_offs = 0;
     attr_char_value.max_len   = BLE_NUS_MAX_RX_CHAR_LEN;
-    
+
     return sd_ble_gatts_characteristic_add(p_nus->service_handle,
                                            &char_md,
                                            &attr_char_value,
@@ -153,9 +153,9 @@ static uint32_t tx_char_add(ble_nus_t * p_nus, const ble_nus_init_t * p_nus_init
     ble_gatts_attr_t    attr_char_value;
     ble_uuid_t          ble_uuid;
     ble_gatts_attr_md_t attr_md;
-    
+
     memset(&char_md, 0, sizeof(char_md));
-    
+
     char_md.char_props.write            = 1;
     char_md.char_props.write_wo_resp    = 1;
     char_md.p_char_user_desc            = NULL;
@@ -163,20 +163,20 @@ static uint32_t tx_char_add(ble_nus_t * p_nus, const ble_nus_init_t * p_nus_init
     char_md.p_user_desc_md              = NULL;
     char_md.p_cccd_md                   = NULL;
     char_md.p_sccd_md                   = NULL;
-    
+
     ble_uuid.type                       = p_nus->uuid_type;
     ble_uuid.uuid                       = BLE_UUID_NUS_TX_CHARACTERISTIC;
-    
+
     memset(&attr_md, 0, sizeof(attr_md));
 
     BLE_GAP_CONN_SEC_MODE_SET_OPEN(&attr_md.read_perm);
     BLE_GAP_CONN_SEC_MODE_SET_OPEN(&attr_md.write_perm);
-    
+
     attr_md.vloc                        = BLE_GATTS_VLOC_STACK;
     attr_md.rd_auth                     = 0;
     attr_md.wr_auth                     = 0;
     attr_md.vlen                        = 1;
-    
+
     memset(&attr_char_value, 0, sizeof(attr_char_value));
 
     attr_char_value.p_uuid              = &ble_uuid;
@@ -184,7 +184,7 @@ static uint32_t tx_char_add(ble_nus_t * p_nus, const ble_nus_init_t * p_nus_init
     attr_char_value.init_len            = 1;
     attr_char_value.init_offs           = 0;
     attr_char_value.max_len             = BLE_NUS_MAX_TX_CHAR_LEN;
-    
+
     return sd_ble_gatts_characteristic_add(p_nus->service_handle,
                                            &char_md,
                                            &attr_char_value,
@@ -231,12 +231,12 @@ uint32_t ble_nus_init(ble_nus_t * p_nus, const ble_nus_init_t * p_nus_init)
     {
         return NRF_ERROR_NULL;
     }
-    
+
     // Initialize service structure.
     p_nus->conn_handle              = BLE_CONN_HANDLE_INVALID;
     p_nus->data_handler             = p_nus_init->data_handler;
     p_nus->is_notification_enabled  = false;
-    
+
 
     /**@snippet [Adding proprietary Service to S110 SoftDevice] */
 
@@ -259,7 +259,7 @@ uint32_t ble_nus_init(ble_nus_t * p_nus, const ble_nus_init_t * p_nus_init)
     {
         return err_code;
     }
-    
+
     // Add RX Characteristic.
     err_code = rx_char_add(p_nus, p_nus_init);
     if (err_code != NRF_SUCCESS)
@@ -273,7 +273,7 @@ uint32_t ble_nus_init(ble_nus_t * p_nus, const ble_nus_init_t * p_nus_init)
     {
         return err_code;
     }
-    
+
     return NRF_SUCCESS;
 }
 
@@ -286,23 +286,23 @@ uint32_t ble_nus_send_string(ble_nus_t * p_nus, uint8_t * string, uint16_t lengt
     {
         return NRF_ERROR_NULL;
     }
-    
+
     if ((p_nus->conn_handle == BLE_CONN_HANDLE_INVALID) || (!p_nus->is_notification_enabled))
     {
         return NRF_ERROR_INVALID_STATE;
     }
-    
+
     if (length > BLE_NUS_MAX_DATA_LEN)
     {
         return NRF_ERROR_INVALID_PARAM;
     }
-    
+
     memset(&hvx_params, 0, sizeof(hvx_params));
 
     hvx_params.handle = p_nus->rx_handles.value_handle;
     hvx_params.p_data = string;
     hvx_params.p_len  = &length;
     hvx_params.type   = BLE_GATT_HVX_NOTIFICATION;
-    
+
     return sd_ble_gatts_hvx(p_nus->conn_handle, &hvx_params);
 }
