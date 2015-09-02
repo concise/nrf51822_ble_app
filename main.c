@@ -37,10 +37,15 @@
 #include "ble_error_log.h"
 #include "ble_debug_assert_handler.h"
 
+#define NRF51DK_PCA10028_LED1_PIN_NO    21                                          /**< The PIN number for LED 1 on nRF51DK (PCA10028) board. */
+#define NRF51DK_PCA10028_LED2_PIN_NO    22                                          /**< The PIN number for LED 2 on nRF51DK (PCA10028) board. */
+#define NRF51DK_PCA10028_LED3_PIN_NO    23                                          /**< The PIN number for LED 3 on nRF51DK (PCA10028) board. */
+#define NRF51DK_PCA10028_LED4_PIN_NO    24                                          /**< The PIN number for LED 4 on nRF51DK (PCA10028) board. */
+
 #define WAKEUP_BUTTON_PIN               BUTTON_0                                    /**< Button used to wake up the application. */
 
-#define ADVERTISING_LED_PIN_NO          LED_0                                       /**< LED to indicate advertising state. */
-#define CONNECTED_LED_PIN_NO            LED_1                                       /**< LED to indicate connected state. */
+#define ADVERTISING_LED_PIN_NO          NRF51DK_PCA10028_LED1_PIN_NO                /**< LED to indicate advertising state. */
+#define CONNECTED_LED_PIN_NO            NRF51DK_PCA10028_LED2_PIN_NO                /**< LED to indicate connected state. */
 
 #define DEVICE_NAME                     "Nordic_UART"                               /**< Name of device. Will be included in the advertising data. */
 
@@ -128,6 +133,9 @@ static void leds_init(void)
 {
     nrf_gpio_cfg_output(ADVERTISING_LED_PIN_NO);
     nrf_gpio_cfg_output(CONNECTED_LED_PIN_NO);
+
+    nrf_gpio_pin_set(ADVERTISING_LED_PIN_NO);
+    nrf_gpio_pin_set(CONNECTED_LED_PIN_NO);
 }
 
 
@@ -319,7 +327,7 @@ static void advertising_start(void)
     err_code = sd_ble_gap_adv_start(&adv_params);
     APP_ERROR_CHECK(err_code);
 
-    nrf_gpio_pin_set(ADVERTISING_LED_PIN_NO);
+    nrf_gpio_pin_clear(ADVERTISING_LED_PIN_NO);
 }
 
 
@@ -336,14 +344,14 @@ static void on_ble_evt(ble_evt_t * p_ble_evt)
     switch (p_ble_evt->header.evt_id)
     {
         case BLE_GAP_EVT_CONNECTED:
-            nrf_gpio_pin_set(CONNECTED_LED_PIN_NO);
-            nrf_gpio_pin_clear(ADVERTISING_LED_PIN_NO);
+            nrf_gpio_pin_clear(CONNECTED_LED_PIN_NO);
+            nrf_gpio_pin_set(ADVERTISING_LED_PIN_NO);
             m_conn_handle = p_ble_evt->evt.gap_evt.conn_handle;
 
             break;
 
         case BLE_GAP_EVT_DISCONNECTED:
-            nrf_gpio_pin_clear(CONNECTED_LED_PIN_NO);
+            nrf_gpio_pin_set(CONNECTED_LED_PIN_NO);
             m_conn_handle = BLE_CONN_HANDLE_INVALID;
 
             advertising_start();
@@ -384,7 +392,7 @@ static void on_ble_evt(ble_evt_t * p_ble_evt)
         case BLE_GAP_EVT_TIMEOUT:
             if (p_ble_evt->evt.gap_evt.params.timeout.src == BLE_GAP_TIMEOUT_SRC_ADVERTISEMENT)
             {
-                nrf_gpio_pin_clear(ADVERTISING_LED_PIN_NO);
+                nrf_gpio_pin_set(ADVERTISING_LED_PIN_NO);
                 advertising_start();
             }
             break;
