@@ -454,11 +454,6 @@
               <FilePath>..\..\..\..\..\..\Source\sd_common\softdevice_handler.c</FilePath>
             </File>
             <File>
-              <FileName>simple_uart.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\Source\simple_uart\simple_uart.c</FilePath>
-            </File>
-            <File>
               <FileName>app_timer.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\..\..\Source\app_common\app_timer.c</FilePath>
@@ -913,11 +908,6 @@
               <FileName>softdevice_handler.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\..\..\Source\sd_common\softdevice_handler.c</FilePath>
-            </File>
-            <File>
-              <FileName>simple_uart.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\..\..\..\..\Source\simple_uart\simple_uart.c</FilePath>
             </File>
             <File>
               <FileName>app_timer.c</FileName>

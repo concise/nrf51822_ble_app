@@ -33,7 +33,6 @@
 #include "app_timer.h"
 #include "app_button.h"
 #include "ble_nus.h"
-#include "simple_uart.h"
 #include "boards.h"
 #include "ble_error_log.h"
 #include "ble_debug_assert_handler.h"
@@ -210,11 +209,7 @@ static void advertising_init(void)
 /**@snippet [Handling the data received over BLE] */
 void nus_data_handler(ble_nus_t * p_nus, uint8_t * p_data, uint16_t length)
 {
-    for (int i = 0; i < length; i++)
-    {
-        simple_uart_put(p_data[i]);
-    }
-    simple_uart_put('\n');
+    ble_nus_send_string(p_nus, p_data, length);
 }
 /**@snippet [Handling the data received over BLE] */
 
@@ -439,6 +434,7 @@ static void ble_stack_init(void)
     APP_ERROR_CHECK(err_code);
 }
 
+
 /**@brief  Function for configuring the buttons.
  */
 static void buttons_init(void)
@@ -458,53 +454,6 @@ static void power_manage(void)
 }
 
 
-/**@brief  Function for initializing the UART module.
- */
-static void uart_init(void)
-{
-    /**@snippet [UART Initialization] */
-    simple_uart_config(RTS_PIN_NUMBER, TX_PIN_NUMBER, CTS_PIN_NUMBER, RX_PIN_NUMBER, HWFC);
-
-    NRF_UART0->INTENSET = UART_INTENSET_RXDRDY_Enabled << UART_INTENSET_RXDRDY_Pos;
-
-    NVIC_SetPriority(UART0_IRQn, APP_IRQ_PRIORITY_LOW);
-    NVIC_EnableIRQ(UART0_IRQn);
-    /**@snippet [UART Initialization] */
-}
-
-
-/**@brief   Function for handling UART interrupts.
- *
- * @details This function will receive a single character from the UART and append it to a string.
- *          The string will be be sent over BLE when the last character received was a 'new line'
- *          i.e '\n' (hex 0x0D) or if the string has reached a length of @ref NUS_MAX_DATA_LENGTH.
- */
-void UART0_IRQHandler(void)
-{
-    static uint8_t data_array[BLE_NUS_MAX_DATA_LEN];
-    static uint8_t index = 0;
-    uint32_t err_code;
-
-    /**@snippet [Handling the data received over UART] */
-
-    data_array[index] = simple_uart_get();
-    index++;
-
-    if ((data_array[index - 1] == '\n') || (index >= (BLE_NUS_MAX_DATA_LEN - 1)))
-    {
-        err_code = ble_nus_send_string(&m_nus, data_array, index + 1);
-        if (err_code != NRF_ERROR_INVALID_STATE)
-        {
-            APP_ERROR_CHECK(err_code);
-        }
-
-        index = 0;
-    }
-
-    /**@snippet [Handling the data received over UART] */
-}
-
-
 /**@brief  Application main function.
  */
 int main(void)
@@ -513,15 +462,12 @@ int main(void)
     leds_init();
     timers_init();
     buttons_init();
-    uart_init();
     ble_stack_init();
     gap_params_init();
     services_init();
     advertising_init();
     conn_params_init();
     sec_params_init();
-
-    simple_uart_putstring(START_STRING);
 
     advertising_start();
 
