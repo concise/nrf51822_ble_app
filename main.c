@@ -218,6 +218,18 @@ static void advertising_init(void)
 }
 
 
+// XXX: Demonstrate how to use the "datastore" wrapper
+static ble_nus_t *tmp_nus = 0;
+static void my_datastore_write_callback_t(datastore_error_t result)
+{
+    if (result == DATASTORE_NO_ERROR) {
+        ble_nus_send_string(tmp_nus, (unsigned char *) "WRITE OK", 8);
+    } else {
+        ble_nus_send_string(tmp_nus, (unsigned char *) "WRITE FAILED", 12);
+    }
+}
+
+
 /**@brief    Function for handling the data from the Nordic UART Service.
  *
  * @details  This function will process the data received from the Nordic UART BLE Service and send
@@ -227,6 +239,23 @@ static void advertising_init(void)
 void nus_data_handler(ble_nus_t * p_nus, uint8_t * p_data, uint16_t length)
 {
     ble_nus_send_string(p_nus, p_data, length);
+
+    // XXX: Demonstrate how to use the "datastore" wrapper
+    tmp_nus = p_nus;
+    if (length == 2 && p_data[0] == 'w') {
+        unsigned char tmp[4];
+        tmp[0] = p_data[1];
+        datastore_write_async(0, tmp, 1, &my_datastore_write_callback_t);
+    } else if (length == 1 && p_data[0] == 'r') {
+        unsigned char tmp[4];
+        datastore_error_t result;
+        result = datastore_read(0, tmp, 1);
+        if (result == DATASTORE_NO_ERROR) {
+            ble_nus_send_string(p_nus, tmp, 1);
+        } else {
+            ble_nus_send_string(p_nus, (unsigned char *) "READ FAILED", 11);
+        }
+    }
 }
 /**@snippet [Handling the data received over BLE] */
 
