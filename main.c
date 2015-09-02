@@ -78,6 +78,8 @@
 
 #define DEAD_BEEF                       0xDEADBEEF                                  /**< Value used as error code on stack dump, can be used to identify stack location on stack unwind. */
 
+#define RADIO_TX_POWER_IN_DBM           -16                                         /**< The radio transmit power value in dBm.  Must be either -40, -30, -20, -16, -12, -8, -4, 0, or 4. */
+
 static ble_gap_sec_params_t             m_sec_params;                               /**< Security requirements for this application. */
 static uint16_t                         m_conn_handle = BLE_CONN_HANDLE_INVALID;    /**< Handle of the current connection. */
 static ble_nus_t                        m_nus;                                      /**< Structure to identify the Nordic UART Service. */
@@ -176,6 +178,9 @@ static void gap_params_init(void)
     gap_conn_params.conn_sup_timeout  = CONN_SUP_TIMEOUT;
 
     err_code = sd_ble_gap_ppcp_set(&gap_conn_params);
+    APP_ERROR_CHECK(err_code);
+
+    err_code = sd_ble_gap_tx_power_set(RADIO_TX_POWER_IN_DBM);
     APP_ERROR_CHECK(err_code);
 }
 
