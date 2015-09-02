@@ -1,3 +1,0 @@
-Add these two files into the project source code build list:
-..\datastore.c
-..\..\..\..\..\..\Source\app_common\pstorage.c
