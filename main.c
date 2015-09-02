@@ -36,6 +36,7 @@
 #include "boards.h"
 #include "ble_error_log.h"
 #include "ble_debug_assert_handler.h"
+#include "datastore.h"
 
 #define NRF51DK_PCA10028_LED1_PIN_NO    21                                          /**< The PIN number for LED 1 on nRF51DK (PCA10028) board. */
 #define NRF51DK_PCA10028_LED2_PIN_NO    22                                          /**< The PIN number for LED 2 on nRF51DK (PCA10028) board. */
@@ -515,6 +516,7 @@ int main(void)
     timers_init();
     buttons_init();
     ble_stack_init();
+    datastore_init();
     device_name_init();
     gap_params_init();
     services_init();
