@@ -481,6 +481,26 @@ static void device_name_init(void)
 }
 
 
+static app_timer_id_t my_timer_id;
+
+static void my_timer_start(void)
+{
+    app_timer_start(my_timer_id, APP_TIMER_TICKS(500, APP_TIMER_PRESCALER), NULL);
+}
+
+static void my_timer_timeout_handler(void *p_context)
+{
+    current_status[0] = nrf_gpio_pin_read(NRF51822_ADC_IN0) ? '1' : '0';
+    current_status[1] = nrf_gpio_pin_read(NRF51822_ADC_IN1) ? '1' : '0';
+    my_timer_start();
+}
+
+static void my_timer_init(void)
+{
+    app_timer_create(&my_timer_id, APP_TIMER_MODE_SINGLE_SHOT, &my_timer_timeout_handler);
+}
+
+
 /**@brief  Application main function.
  */
 int main(void)
@@ -495,14 +515,14 @@ int main(void)
     advertising_init();
     conn_params_init();
     sec_params_init();
+    my_timer_init();
 
     advertising_start();
+    my_timer_start();
 
     // Enter main loop
     for (;;)
     {
-        current_status[0] = nrf_gpio_pin_read(NRF51822_ADC_IN0) ? '1' : '0';
-        current_status[1] = nrf_gpio_pin_read(NRF51822_ADC_IN1) ? '1' : '0';
         power_manage();
     }
 }
