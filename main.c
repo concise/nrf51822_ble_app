@@ -70,8 +70,6 @@
 #define SEC_PARAM_MIN_KEY_SIZE          7                                           /**< Minimum encryption key size. */
 #define SEC_PARAM_MAX_KEY_SIZE          16                                          /**< Maximum encryption key size. */
 
-#define START_STRING                    "Start...\n"                                /**< The string that will be sent over the UART when the application starts. */
-
 #define DEAD_BEEF                       0xDEADBEEF                                  /**< Value used as error code on stack dump, can be used to identify stack location on stack unwind. */
 
 #define RADIO_TX_POWER_IN_DBM           -16                                         /**< The radio transmit power value in dBm.  Must be either -40, -30, -20, -16, -12, -8, -4, 0, or 4. */
@@ -81,8 +79,11 @@ static uint16_t                         m_conn_handle = BLE_CONN_HANDLE_INVALID;
 static ble_nus_t                        m_nus;                                      /**< Structure to identify the Nordic UART Service. */
 
 
-static char DEVICE_NAME[40] = "BLE Uninitialized"; /* the device name that gets advertised */
-static void device_name_init(void); /* initialize the above array, must be called after ble_stack_init() and before gap_params_init() */
+//
+// This array will be updated by device_name_init() which should be invoked
+// after ble_stack_init() and before gap_params_init().
+//
+static char DEVICE_NAME[40] = "BLE Uninitialized";
 
 
 /**@brief     Error handler function, which is called when an error has occurred.
