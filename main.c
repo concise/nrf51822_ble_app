@@ -131,7 +131,7 @@ void assert_nrf_callback(uint16_t line_num, const uint8_t * p_file_name)
  *
  * @details Initializes all LEDs used by this application.
  */
-static void leds_init(void)
+static void gpio_init(void)
 {
     nrf_gpio_cfg_output(ADVERTISING_LED_PIN_NO);
     nrf_gpio_cfg_output(CONNECTED_LED_PIN_NO);
@@ -352,21 +352,17 @@ static void on_ble_evt(ble_evt_t * p_ble_evt)
             nrf_gpio_pin_clear(CONNECTED_LED_PIN_NO);
             nrf_gpio_pin_set(ADVERTISING_LED_PIN_NO);
             m_conn_handle = p_ble_evt->evt.gap_evt.conn_handle;
-
             break;
 
         case BLE_GAP_EVT_DISCONNECTED:
             nrf_gpio_pin_set(CONNECTED_LED_PIN_NO);
             m_conn_handle = BLE_CONN_HANDLE_INVALID;
-
             advertising_start();
-
             break;
 
         case BLE_GAP_EVT_SEC_PARAMS_REQUEST:
-            err_code = sd_ble_gap_sec_params_reply(m_conn_handle,
-                                                   BLE_GAP_SEC_STATUS_SUCCESS,
-                                                   &m_sec_params);
+            err_code = sd_ble_gap_sec_params_reply(
+                    m_conn_handle, BLE_GAP_SEC_STATUS_SUCCESS, &m_sec_params);
             APP_ERROR_CHECK(err_code);
             break;
 
@@ -484,7 +480,7 @@ static void device_name_init(void)
 int main(void)
 {
     // Initialize
-    leds_init();
+    gpio_init();
     timers_init();
     ble_stack_init();
     device_name_init();
