@@ -43,8 +43,6 @@
 #define NRF51DK_PCA10028_LED3_PIN_NO    23                                          /**< The PIN number for LED 3 on nRF51DK (PCA10028) board. */
 #define NRF51DK_PCA10028_LED4_PIN_NO    24                                          /**< The PIN number for LED 4 on nRF51DK (PCA10028) board. */
 
-#define WAKEUP_BUTTON_PIN               BUTTON_0                                    /**< Button used to wake up the application. */
-
 #define ADVERTISING_LED_PIN_NO          NRF51DK_PCA10028_LED1_PIN_NO                /**< LED to indicate advertising state. */
 #define CONNECTED_LED_PIN_NO            NRF51DK_PCA10028_LED2_PIN_NO                /**< LED to indicate connected state. */
 
@@ -473,16 +471,6 @@ static void ble_stack_init(void)
 }
 
 
-/**@brief  Function for configuring the buttons.
- */
-static void buttons_init(void)
-{
-    nrf_gpio_cfg_sense_input(WAKEUP_BUTTON_PIN,
-                             BUTTON_PULL,
-                             NRF_GPIO_PIN_SENSE_LOW);
-}
-
-
 /**@brief  Function for placing the application in low power state while waiting for events.
  */
 static void power_manage(void)
@@ -543,7 +531,6 @@ int main(void)
     // Initialize
     leds_init();
     timers_init();
-    buttons_init();
     ble_stack_init();
     datastore_init();
     device_name_init();
