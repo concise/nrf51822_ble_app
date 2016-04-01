@@ -42,9 +42,6 @@
 #define NRF51DK_PCA10028_LED3_PIN_NO    23                                          /**< The PIN number for LED 3 on nRF51DK (PCA10028) board. */
 #define NRF51DK_PCA10028_LED4_PIN_NO    24                                          /**< The PIN number for LED 4 on nRF51DK (PCA10028) board. */
 
-#define ADVERTISING_LED_PIN_NO          NRF51DK_PCA10028_LED1_PIN_NO                /**< LED to indicate advertising state. */
-#define CONNECTED_LED_PIN_NO            NRF51DK_PCA10028_LED2_PIN_NO                /**< LED to indicate connected state. */
-
 #define APP_ADV_INTERVAL                64                                          /**< The advertising interval (in units of 0.625 ms. This value corresponds to 40 ms). */
 #define APP_ADV_TIMEOUT_IN_SECONDS      180                                         /**< The advertising timeout (in units of seconds). */
 
@@ -128,17 +125,12 @@ void assert_nrf_callback(uint16_t line_num, const uint8_t * p_file_name)
 }
 
 
-/**@brief   Function for the LEDs initialization.
+/**@brief   Function for the GPIO initialization.
  *
- * @details Initializes all LEDs used by this application.
+ * @details Initializes all GPIOs used by this application.
  */
 static void gpio_init(void)
 {
-    nrf_gpio_cfg_output(ADVERTISING_LED_PIN_NO);
-    nrf_gpio_cfg_output(CONNECTED_LED_PIN_NO);
-
-    nrf_gpio_pin_set(ADVERTISING_LED_PIN_NO);
-    nrf_gpio_pin_set(CONNECTED_LED_PIN_NO);
 }
 
 
@@ -332,8 +324,6 @@ static void advertising_start(void)
 
     err_code = sd_ble_gap_adv_start(&adv_params);
     APP_ERROR_CHECK(err_code);
-
-    nrf_gpio_pin_clear(ADVERTISING_LED_PIN_NO);
 }
 
 
@@ -350,13 +340,10 @@ static void on_ble_evt(ble_evt_t * p_ble_evt)
     switch (p_ble_evt->header.evt_id)
     {
         case BLE_GAP_EVT_CONNECTED:
-            nrf_gpio_pin_clear(CONNECTED_LED_PIN_NO);
-            nrf_gpio_pin_set(ADVERTISING_LED_PIN_NO);
             m_conn_handle = p_ble_evt->evt.gap_evt.conn_handle;
             break;
 
         case BLE_GAP_EVT_DISCONNECTED:
-            nrf_gpio_pin_set(CONNECTED_LED_PIN_NO);
             m_conn_handle = BLE_CONN_HANDLE_INVALID;
             advertising_start();
             break;
@@ -394,7 +381,6 @@ static void on_ble_evt(ble_evt_t * p_ble_evt)
         case BLE_GAP_EVT_TIMEOUT:
             if (p_ble_evt->evt.gap_evt.params.timeout.src == BLE_GAP_TIMEOUT_SRC_ADVERTISEMENT)
             {
-                nrf_gpio_pin_set(ADVERTISING_LED_PIN_NO);
                 advertising_start();
             }
             break;
