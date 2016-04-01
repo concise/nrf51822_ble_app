@@ -83,8 +83,7 @@ static ble_nus_t                        m_nus;                                  
 
 
 static char DEVICE_NAME[40] = "BLE Uninitialized"; /* the device name that gets advertised */
-static void hexEncode(int n, const unsigned char *, unsigned char *);
-static void device_name_init(void); /* initialize the above array, must be called after ble_stack_init() */
+static void device_name_init(void); /* initialize the above array, must be called after ble_stack_init() and before gap_params_init() */
 
 
 /**@brief     Error handler function, which is called when an error has occurred.
@@ -480,47 +479,33 @@ static void power_manage(void)
 }
 
 
-static void hexEncode(int n, const unsigned char *in, unsigned char *out)
-{
-    static const char *encoding_Translation = "0123456789ABCDEF";
-    int i;
-    for (i = 0; i < n; ++i) {
-        out[ 2*i     ] = encoding_Translation[ in[i] / 16 ];
-        out[ 2*i + 1 ] = encoding_Translation[ in[i] % 16 ];
-    }
-}
-
-
 static void device_name_init(void)
 {
     ble_gap_addr_t ctx;
-    int i;
-    unsigned char MAC_address[8]; /* {0x00, 0x11, 0x22, 0x33, 0x44, 0x55} */
-    unsigned char MAC_address_str[20]; /* "00:11:22:33:44:55" */
+    char *readable_addr = DEVICE_NAME + 4;
 
-    // retrieve the MAC address
-    if (sd_ble_gap_address_get(&ctx) == 0) {
-        MAC_address[0] = ctx.addr[5];
-        MAC_address[1] = ctx.addr[4];
-        MAC_address[2] = ctx.addr[3];
-        MAC_address[3] = ctx.addr[2];
-        MAC_address[4] = ctx.addr[1];
-        MAC_address[5] = ctx.addr[0];
-
-        // encode to readable ASCII string
-        for (i = 0; i < 6; ++i) {
-            hexEncode(1, MAC_address + i, MAC_address_str + i*3);
-            MAC_address_str[i*3 + 2] = ':';
-        }
-        MAC_address_str[17] = 0;
-
-        // write the ASCII string to the global array
-        memcpy(DEVICE_NAME, "BLE ", 4);
-        memcpy(DEVICE_NAME + 4, MAC_address_str, 18);
-    } else {
-        // write the ASCII string to the global array
-        memcpy(DEVICE_NAME, "BLE Unnamed", 12);
+    if (sd_ble_gap_address_get(&ctx) != 0) {
+        return;
     }
+
+    readable_addr[0]  = "0123456789ABCDEF"[ctx.addr[5] >> 4];
+    readable_addr[1]  = "0123456789ABCDEF"[ctx.addr[5] & 15];
+    readable_addr[2]  = ':';
+    readable_addr[3]  = "0123456789ABCDEF"[ctx.addr[4] >> 4];
+    readable_addr[4]  = "0123456789ABCDEF"[ctx.addr[4] & 15];
+    readable_addr[5]  = ':';
+    readable_addr[6]  = "0123456789ABCDEF"[ctx.addr[3] >> 4];
+    readable_addr[7]  = "0123456789ABCDEF"[ctx.addr[3] & 15];
+    readable_addr[8]  = ':';
+    readable_addr[9]  = "0123456789ABCDEF"[ctx.addr[2] >> 4];
+    readable_addr[10] = "0123456789ABCDEF"[ctx.addr[2] & 15];
+    readable_addr[11] = ':';
+    readable_addr[12] = "0123456789ABCDEF"[ctx.addr[1] >> 4];
+    readable_addr[13] = "0123456789ABCDEF"[ctx.addr[1] & 15];
+    readable_addr[14] = ':';
+    readable_addr[15] = "0123456789ABCDEF"[ctx.addr[0] >> 4];
+    readable_addr[16] = "0123456789ABCDEF"[ctx.addr[0] & 15];
+    readable_addr[17] = 0;
 }
 
 
