@@ -1,5 +1,8 @@
 
 //
+// https://github.com/NordicSemiconductor/nrf51-ADC-examples
+// https://github.com/NordicSemiconductor/nrf51-ADC-examples/blob/master/simultaneous-adc-sampling-from-two-inputs/main.c
+//
 // I don't know which header files or which C source files I need in order to
 // make the following code works yet.
 //
