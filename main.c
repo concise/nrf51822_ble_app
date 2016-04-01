@@ -42,6 +42,15 @@
 #define NRF51DK_PCA10028_LED3_PIN_NO    23                                          /**< The PIN number for LED 3 on nRF51DK (PCA10028) board. */
 #define NRF51DK_PCA10028_LED4_PIN_NO    24                                          /**< The PIN number for LED 4 on nRF51DK (PCA10028) board. */
 
+#define NRF51822_ADC_IN1                2
+#define NRF51822_ADC_IN0                3
+#define NRF51822_LED1                   8
+#define NRF51822_LED2                   10
+#define NRF51822_LED3                   12
+#define NRF51822_BUZZ                   14
+#define NRF51822_IO_2                   15
+#define NRF51822_IO_1                   16
+
 #define APP_ADV_INTERVAL                64                                          /**< The advertising interval (in units of 0.625 ms. This value corresponds to 40 ms). */
 #define APP_ADV_TIMEOUT_IN_SECONDS      180                                         /**< The advertising timeout (in units of seconds). */
 
@@ -74,6 +83,7 @@
 static ble_gap_sec_params_t             m_sec_params;                               /**< Security requirements for this application. */
 static uint16_t                         m_conn_handle = BLE_CONN_HANDLE_INVALID;    /**< Handle of the current connection. */
 static ble_nus_t                        m_nus;                                      /**< Structure to identify the Nordic UART Service. */
+static uint8_t current_status[4] = "--";
 
 
 //
@@ -131,6 +141,15 @@ void assert_nrf_callback(uint16_t line_num, const uint8_t * p_file_name)
  */
 static void gpio_init(void)
 {
+    nrf_gpio_cfg_output(NRF51822_IO_1);
+    nrf_gpio_pin_set(NRF51822_IO_1);
+
+    nrf_gpio_cfg_output(NRF51822_IO_2);
+    nrf_gpio_pin_set(NRF51822_IO_2);
+
+    nrf_gpio_cfg_input(NRF51822_ADC_IN0, NRF_GPIO_PIN_PULLDOWN);
+
+    nrf_gpio_cfg_input(NRF51822_ADC_IN1, NRF_GPIO_PIN_PULLDOWN);
 }
 
 
@@ -215,7 +234,7 @@ static void advertising_init(void)
 /**@snippet [Handling the data received over BLE] */
 void nus_data_handler(ble_nus_t * p_nus, uint8_t * p_data, uint16_t length)
 {
-    ble_nus_send_string(p_nus, p_data, length);
+    ble_nus_send_string(p_nus, current_status, 2);
 }
 /**@snippet [Handling the data received over BLE] */
 
@@ -482,6 +501,8 @@ int main(void)
     // Enter main loop
     for (;;)
     {
+        current_status[0] = nrf_gpio_pin_read(NRF51822_ADC_IN0) ? '1' : '0';
+        current_status[1] = nrf_gpio_pin_read(NRF51822_ADC_IN1) ? '1' : '0';
         power_manage();
     }
 }
