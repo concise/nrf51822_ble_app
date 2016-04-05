@@ -69,6 +69,13 @@ void nus_data_handler(ble_nus_t *p_nus, uint8_t *p_data, uint16_t length)
 }
 
 
+static void periodic_task(void)
+{
+    current_status[0] = nrf_gpio_pin_read(NRF51822_ADC_IN0) ? '1' : '0';
+    current_status[1] = nrf_gpio_pin_read(NRF51822_ADC_IN1) ? '1' : '0';
+}
+
+
 void app_error_handler(uint32_t error_code, uint32_t line_num, const uint8_t *p_file_name)
 {
     NVIC_SystemReset();
@@ -341,8 +348,7 @@ static void my_timer_start(void)
 
 static void my_timer_timeout_handler(void *p_context)
 {
-    current_status[0] = nrf_gpio_pin_read(NRF51822_ADC_IN0) ? '1' : '0';
-    current_status[1] = nrf_gpio_pin_read(NRF51822_ADC_IN1) ? '1' : '0';
+    periodic_task();
     my_timer_start();
 }
 
