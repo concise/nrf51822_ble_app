@@ -96,8 +96,6 @@ static void gpio_init(void)
     nrf_gpio_cfg_output(NRF51822_LED2); nrf_gpio_pin_clear(NRF51822_LED2);
     nrf_gpio_cfg_output(NRF51822_LED3); nrf_gpio_pin_clear(NRF51822_LED3);
     nrf_gpio_cfg_output(NRF51822_BUZZ); nrf_gpio_pin_clear(NRF51822_BUZZ);
-    nrf_gpio_cfg_output(NRF51822_IO_1); nrf_gpio_pin_set(NRF51822_IO_1);
-    nrf_gpio_cfg_output(NRF51822_IO_2); nrf_gpio_pin_set(NRF51822_IO_2);
 }
 
 
