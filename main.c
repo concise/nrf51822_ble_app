@@ -213,9 +213,32 @@ static void advertising_init(void)
  *           it to the UART module.
  */
 /**@snippet [Handling the data received over BLE] */
+#include "ecc/uECC.h"
 void nus_data_handler(ble_nus_t * p_nus, uint8_t * p_data, uint16_t length)
 {
+/*
     ble_nus_send_string(p_nus, p_data, length);
+*/
+
+    uint8_t private_key[32] = "\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa\xaa";
+    uint8_t message[5] = "hello";
+    uint8_t message_hash[32] = {0};
+    uint8_t signature[64] = {0};
+
+    {
+        sha256_context_t ctx;
+        sha256_begin(&ctx);
+        sha256_update(&ctx, sizeof(message), message);
+        sha256_output(&ctx, message_hash);
+    }
+
+    rfc6979sha256p256sign(private_key, message_hash, signature);
+
+    ble_nus_send_string(p_nus, signature + 16 * 0, 16);
+    ble_nus_send_string(p_nus, signature + 16 * 1, 16);
+    ble_nus_send_string(p_nus, signature + 16 * 2, 16);
+    ble_nus_send_string(p_nus, signature + 16 * 3, 16);
+
 }
 /**@snippet [Handling the data received over BLE] */
 

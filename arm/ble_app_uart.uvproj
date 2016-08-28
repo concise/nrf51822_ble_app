@@ -341,7 +341,7 @@
           </ArmAdsMisc>
           <Cads>
             <interw>1</interw>
-            <Optim>1</Optim>
+            <Optim>4</Optim>
             <oTime>0</oTime>
             <SplitLS>0</SplitLS>
             <OneElfS>0</OneElfS>
@@ -422,6 +422,31 @@
               <FileName>datastore.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\datastore.c</FilePath>
+            </File>
+            <File>
+              <FileName>hmac.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\ecc\hmac.c</FilePath>
+            </File>
+            <File>
+              <FileName>hmacsha256.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\ecc\hmacsha256.c</FilePath>
+            </File>
+            <File>
+              <FileName>rfc6979sha256p256csprng.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\ecc\rfc6979sha256p256csprng.c</FilePath>
+            </File>
+            <File>
+              <FileName>sha256.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\ecc\sha256.c</FilePath>
+            </File>
+            <File>
+              <FileName>uECC.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\ecc\uECC.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -888,6 +913,31 @@
               <FileName>datastore.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\datastore.c</FilePath>
+            </File>
+            <File>
+              <FileName>hmac.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\ecc\hmac.c</FilePath>
+            </File>
+            <File>
+              <FileName>hmacsha256.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\ecc\hmacsha256.c</FilePath>
+            </File>
+            <File>
+              <FileName>rfc6979sha256p256csprng.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\ecc\rfc6979sha256p256csprng.c</FilePath>
+            </File>
+            <File>
+              <FileName>sha256.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\ecc\sha256.c</FilePath>
+            </File>
+            <File>
+              <FileName>uECC.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\ecc\uECC.c</FilePath>
             </File>
           </Files>
         </Group>
